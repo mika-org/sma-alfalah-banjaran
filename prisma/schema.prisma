@@ -1,0 +1,234 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum PeranPengguna {
+  SUPER_ADMIN
+  EDITOR
+}
+
+enum StatusKonten {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Pengguna {
+  id            String        @id @default(uuid())
+  nama_pengguna String        @unique
+  email         String        @unique
+  nama          String
+  password_hash String
+  peran         PeranPengguna @default(SUPER_ADMIN)
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
+  media         Media[]
+
+  @@map("pengguna")
+}
+
+model PengaturanSitus {
+  id             String   @id @default(uuid())
+  nama           String   @default("SMA Al Falah Banjaran")
+  tagline        String   @default("Mewujudkan Generasi Berilmu, Berakhlak, dan Siap Menghadapi Masa Depan")
+  deskripsi      String   @db.Text
+  logo           String?  @default("/images/logo.png")
+  favicon        String?  @default("/images/logo.png")
+  alamat         String   @db.Text
+  telepon        String
+  whatsapp       String
+  email          String
+  instagram      String?  @default("@smaalfalahbanjaran")
+  youtube        String?  @default("SMA Al Falah Banjaran")
+  tiktok         String?  @default("@smaalfalahbanjaran")
+  url_peta       String?  @db.Text
+  url_embed_peta String?  @db.Text
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  @@map("pengaturan_situs")
+}
+
+model Beranda {
+  id                    String   @id @default(uuid())
+  judul_utama_1         String   @default("Mewujudkan Generasi")
+  judul_sorotan         String   @default("Berilmu, Berakhlak,")
+  judul_utama_2         String   @default("dan Siap Menghadapi Masa Depan")
+  subjudul              String   @db.Text
+  teks_cta              String   @default("Daftar Sekarang")
+  tautan_cta            String   @default("/ppdb")
+  gambar_hero           String   @default("/images/hero-students-hd.jpg")
+  peringkat_akreditasi  String   @default("B")
+  lembaga_akreditasi    String   @default("BAN-S/M")
+  status_ppdb           String   @default("PPDB dibuka")
+  tahun_ajaran_ppdb     String   @default("2026/2027")
+  label_tentang         String   @default("Tentang Sekolah")
+  judul_tentang_1       String   @default("Membina Potensi Siswa Menjadi")
+  judul_tentang_sorotan String   @default("Generasi Mandiri & Berakhlak")
+  deskripsi_tentang     String   @db.Text
+  teks_cta_tentang      String   @default("Cari Tahu Lebih Lanjut")
+  tautan_cta_tentang    String   @default("/profil")
+  gambar_tentang        String   @default("/images/about-school.jpg")
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
+
+  @@map("beranda")
+}
+
+model Keunggulan {
+  id            String   @id @default(uuid())
+  judul         String
+  deskripsi     String   @db.Text
+  ikon          String   @default("trophy")
+  urutan        Int      @default(0)
+  status_terbit Boolean  @default(true)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@index([urutan, status_terbit])
+  @@map("keunggulan")
+}
+
+model Statistik {
+  id            String   @id @default(uuid())
+  label         String
+  nilai         String
+  ikon          String   @default("graduation")
+  urutan        Int      @default(0)
+  status_terbit Boolean  @default(true)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@index([urutan, status_terbit])
+  @@map("statistik")
+}
+
+model Halaman {
+  id            String       @id @default(uuid())
+  slug          String       @unique
+  judul         String
+  konten        String       @db.Text
+  gambar_sampul String?
+  judul_seo     String?
+  deskripsi_seo String?
+  status        StatusKonten @default(PUBLISHED)
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @updatedAt
+
+  @@index([slug, status])
+  @@map("halaman")
+}
+
+model Program {
+  id         String       @id @default(uuid())
+  slug       String       @unique
+  judul      String
+  ringkasan  String       @db.Text
+  konten     String       @db.Text
+  gambar     String       @default("/images/about-school.jpg")
+  ikon       String       @default("book")
+  urutan     Int          @default(0)
+  status     StatusKonten @default(PUBLISHED)
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt
+
+  @@index([slug, status, urutan])
+  @@map("program")
+}
+
+model Kegiatan {
+  id               String       @id @default(uuid())
+  slug             String       @unique
+  judul            String
+  ringkasan        String       @db.Text
+  konten           String       @db.Text
+  gambar_sampul    String       @default("/images/activity-tahfidz.jpg")
+  kategori         String       @default("Umum")
+  tanggal_kegiatan DateTime     @default(now())
+  diterbitkan_pada DateTime?    @default(now())
+  status           StatusKonten @default(PUBLISHED)
+  created_at       DateTime     @default(now())
+  updated_at       DateTime     @updatedAt
+
+  @@index([slug, status, tanggal_kegiatan])
+  @@map("kegiatan")
+}
+
+model Galeri {
+  id            String   @id @default(uuid())
+  judul         String
+  url_gambar    String
+  teks_alt      String?
+  urutan        Int      @default(0)
+  status_terbit Boolean  @default(true)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@index([urutan, status_terbit])
+  @@map("galeri")
+}
+
+model Testimoni {
+  id            String   @id @default(uuid())
+  nama          String
+  hubungan      String
+  kutipan       String   @db.Text
+  url_foto      String   @default("/images/avatar-1.jpg")
+  urutan        Int      @default(0)
+  status_terbit Boolean  @default(true)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@index([urutan, status_terbit])
+  @@map("testimoni")
+}
+
+model Faq {
+  id            String   @id @default(uuid())
+  pertanyaan    String
+  jawaban       String   @db.Text
+  urutan        Int      @default(0)
+  status_terbit Boolean  @default(true)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@index([urutan, status_terbit])
+  @@map("faq")
+}
+
+model PengaturanPpdb {
+  id              String   @id @default(uuid())
+  tahun_ajaran    String   @default("2026/2027")
+  status_buka     Boolean  @default(true)
+  tagline         String   @default("Penerimaan Peserta Didik Baru (PPDB)")
+  deskripsi       String   @db.Text
+  persyaratan     String   @db.Text
+  jadwal          String   @db.Text
+  kontak          String   @db.Text
+  url_pendaftaran String   @default("https://wa.me/6281234567890")
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  @@map("pengaturan_ppdb")
+}
+
+model Media {
+  id            String    @id @default(uuid())
+  nama_file     String
+  tipe_mime     String
+  ukuran        Int
+  url           String
+  teks_alt      String?
+  diunggah_oleh String?
+  pengguna      Pengguna? @relation(fields: [diunggah_oleh], references: [id], onDelete: SetNull)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+
+  @@index([created_at])
+  @@map("media")
+}
