@@ -28,7 +28,7 @@ jobs:
           script: |
             set -e
 
-            cd /var/www/html/sma-alfalah
+            cd /var/www/html/sma-alfalah-banjaran
 
             git pull origin main
 
