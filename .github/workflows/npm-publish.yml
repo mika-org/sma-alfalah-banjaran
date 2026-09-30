@@ -30,7 +30,7 @@ jobs:
 
             cd /var/www/html/sma-alfalah-banjaran
 
-            git pull origin main
+            git pull origin master
 
             STORAGE_ROOT=/var/www/storage-alfalah
             mkdir -p "$STORAGE_ROOT/uploads"
