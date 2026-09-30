@@ -24,9 +24,14 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT }}
-          script_stop: true
+          script_stop: false
           script: |
             set -e
+
+            # Ensure environment and PATH are loaded for non-interactive shells
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            export PATH="$PATH:/usr/local/bin:$HOME/.nvm/versions/node/$(node -v 2>/dev/null)/bin:$HOME/.npm-global/bin:$HOME/.local/bin"
 
             cd /var/www/html/sma-alfalah-banjaran
 
@@ -50,13 +55,18 @@ jobs:
 
             npm run build
 
-            if pm2 describe alfalah > /dev/null 2>&1; then
-              PORT=3006 pm2 restart alfalah --update-env
-            else
-              PORT=3006 pm2 start npm --name alfalah -- start
+            # Determine PM2 command
+            PM2_CMD="pm2"
+            if ! command -v pm2 > /dev/null 2>&1; then
+              if command -v npx > /dev/null 2>&1; then
+                PM2_CMD="npx pm2"
+              fi
             fi
 
-            pm2 save
+            echo "Restarting application using $PM2_CMD on port 3006..."
+            $PM2_CMD delete alfalah > /dev/null 2>&1 || true
+            PORT=3006 $PM2_CMD start npm --name alfalah -- start
+            $PM2_CMD save
 
       - name: Calculate Duration
         if: always()
