@@ -16,6 +16,8 @@ import {
   HelpCircle,
   GraduationCap,
   UserCheck,
+  Users,
+  CreditCard,
   LogOut,
   ExternalLink,
   Menu,
@@ -39,6 +41,9 @@ export default function AdminLayout({
 
   const menuItems = [
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
+    { label: "Pendaftar PPDB", href: "/admin/ppdb/pendaftar", icon: GraduationCap },
+    { label: "Data Siswa & Ortu", href: "/admin/siswa", icon: Users },
+    { label: "Pengaturan & Rekening PPDB", href: "/admin/ppdb", icon: CreditCard },
     { label: "Identitas Sekolah", href: "/admin/identitas", icon: School },
     { label: "Beranda & Hero", href: "/admin/beranda", icon: Home },
     { label: "Profil Sekolah", href: "/admin/profil", icon: FileText },
@@ -47,7 +52,6 @@ export default function AdminLayout({
     { label: "Galeri Foto", href: "/admin/galeri", icon: ImageIcon },
     { label: "Testimoni", href: "/admin/testimoni", icon: MessageSquare },
     { label: "FAQ", href: "/admin/faq", icon: HelpCircle },
-    { label: "PPDB Online", href: "/admin/ppdb", icon: GraduationCap },
     { label: "Akun Admin", href: "/admin/akun", icon: UserCheck },
   ];
 
@@ -122,6 +126,8 @@ export default function AdminLayout({
               const isActive =
                 item.href === "/admin"
                   ? pathname === "/admin"
+                  : item.href === "/admin/ppdb"
+                  ? pathname === "/admin/ppdb"
                   : pathname.startsWith(item.href);
 
               return (

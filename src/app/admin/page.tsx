@@ -20,6 +20,9 @@ export default function AdminDashboardPage() {
       testimonials: number;
       faqs: number;
       programs: number;
+      calonSiswa?: number;
+      calonSiswaPending?: number;
+      siswa?: number;
     };
     ppdb?: {
       isOpen: boolean;
@@ -55,6 +58,9 @@ export default function AdminDashboardPage() {
     testimonials: 3,
     faqs: 5,
     programs: 4,
+    calonSiswa: 0,
+    calonSiswaPending: 0,
+    siswa: 0,
   };
 
   return (
@@ -69,30 +75,85 @@ export default function AdminDashboardPage() {
             Selamat Datang di Panel CMS SMA Al Falah
           </h1>
           <p className="mt-1 text-slate-300 text-xs sm:text-sm max-w-xl">
-            Kelola seluruh konten website publik, berita kegiatan, galeri foto, profil sekolah, dan pengaturan PPDB secara real-time.
+            Kelola pendaftaran PPDB, verifikasi calon siswa & akun orang tua, berita kegiatan, serta galeri foto secara real-time.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <Link
-            href="/admin/kegiatan"
+            href="/admin/ppdb/pendaftar"
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#0D4A38] hover:bg-[#12634B] text-white text-xs font-bold transition-all shadow-sm"
           >
-            <Plus className="w-4 h-4" />
-            <span>Tambah Kegiatan</span>
+            <GraduationCap className="w-4 h-4" />
+            <span>Verifikasi Calon Siswa</span>
           </Link>
           <Link
-            href="/admin/galeri"
+            href="/admin/ppdb"
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all"
           >
-            <ImageIcon className="w-4 h-4" />
-            <span>Upload Foto</span>
+            <span>Rekening & QRIS</span>
           </Link>
+        </div>
+      </div>
+
+      {/* PPDB Action Banner */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="p-5 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-bold text-amber-800 uppercase tracking-wider block">
+              Calon Siswa PPDB Menunggu Verifikasi
+            </span>
+            <div className="flex items-baseline gap-2 mt-1">
+              <span className="text-3xl font-black text-amber-900">
+                {loading ? "..." : counts.calonSiswaPending ?? 0}
+              </span>
+              <span className="text-xs text-amber-700">
+                dari {counts.calonSiswa ?? 0} total pendaftar
+              </span>
+            </div>
+            <Link
+              href="/admin/ppdb/pendaftar"
+              className="text-xs font-bold text-[#0D4A38] hover:underline inline-flex items-center gap-1 mt-2"
+            >
+              <span>Verifikasi Sekarang</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+            <GraduationCap className="w-6 h-6" />
+          </div>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider block">
+              Siswa Aktif Terdaftar & Akun Orang Tua
+            </span>
+            <div className="flex items-baseline gap-2 mt-1">
+              <span className="text-3xl font-black text-[#0D4A38]">
+                {loading ? "..." : counts.siswa ?? 0}
+              </span>
+              <span className="text-xs text-emerald-700">
+                siswa memiliki akun ortu aktif
+              </span>
+            </div>
+            <Link
+              href="/admin/siswa"
+              className="text-xs font-bold text-[#0D4A38] hover:underline inline-flex items-center gap-1 mt-2"
+            >
+              <span>Lihat Data Siswa & Akun</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-emerald-100 text-[#0D4A38] flex items-center justify-center font-bold">
+            <Eye className="w-6 h-6" />
+          </div>
         </div>
       </div>
 
       {/* Metric Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
         {/* Card 1: Kegiatan */}
         <div className="bg-white rounded-xl p-5 border border-slate-200/80 shadow-xs flex items-center justify-between">
           <div>

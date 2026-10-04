@@ -66,12 +66,18 @@ export default function Navbar({ settings }: NavbarProps) {
         </nav>
 
         {/* CTA Button */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3">
+          <Link
+            href="/ortu/login"
+            className="inline-flex items-center justify-center px-4 py-2.5 rounded-lg border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-50 transition-all"
+          >
+            Portal Ortu
+          </Link>
           <Link
             href="/ppdb"
-            className="inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-[#0B2238] text-white text-sm font-medium hover:bg-[#123758] active:scale-98 transition-all shadow-sm"
+            className="inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-[#0B2238] text-white text-xs font-bold hover:bg-[#123758] active:scale-98 transition-all shadow-sm"
           >
-            Daftar Sekarang
+            PPDB Online
           </Link>
         </div>
 
@@ -109,13 +115,20 @@ export default function Navbar({ settings }: NavbarProps) {
               );
             })}
           </nav>
-          <div className="pt-2">
+          <div className="pt-2 flex flex-col gap-2">
+            <Link
+              href="/ortu/login"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full py-2.5 text-center rounded-lg border border-slate-300 text-slate-700 text-sm font-bold hover:bg-slate-50 transition-colors"
+            >
+              Masuk Portal Orang Tua
+            </Link>
             <Link
               href="/ppdb"
               onClick={() => setMobileMenuOpen(false)}
               className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-[#0B2238] text-white font-medium text-center hover:bg-[#123758] transition-colors shadow-sm"
             >
-              <span>Daftar Sekarang</span>
+              <span>Daftar PPDB Online</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

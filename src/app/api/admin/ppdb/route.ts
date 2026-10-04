@@ -32,6 +32,9 @@ export async function GET() {
     requirements: ppdb.persyaratan,
     schedule: ppdb.jadwal,
     contacts: ppdb.kontak,
+    biayaPendaftaran: ppdb.biaya_pendaftaran,
+    instruksiPembayaran: ppdb.instruksi_pembayaran,
+    qrisImage: ppdb.qris_image,
   };
 
   return NextResponse.json({ ppdb: mapped });
@@ -54,6 +57,15 @@ export async function PUT(request: Request) {
   if (body.jadwal !== undefined || body.schedule !== undefined) data.jadwal = body.jadwal ?? body.schedule;
   if (body.kontak !== undefined || body.contacts !== undefined) data.kontak = body.kontak ?? body.contacts;
   if (body.url_pendaftaran !== undefined || body.registrationUrl !== undefined) data.url_pendaftaran = body.url_pendaftaran ?? body.registrationUrl;
+  if (body.biaya_pendaftaran !== undefined || body.biayaPendaftaran !== undefined) {
+    data.biaya_pendaftaran = parseInt(body.biaya_pendaftaran ?? body.biayaPendaftaran, 10);
+  }
+  if (body.instruksi_pembayaran !== undefined || body.instruksiPembayaran !== undefined) {
+    data.instruksi_pembayaran = body.instruksi_pembayaran ?? body.instruksiPembayaran;
+  }
+  if (body.qris_image !== undefined || body.qrisImage !== undefined) {
+    data.qris_image = body.qris_image ?? body.qrisImage;
+  }
 
   if (!existing) {
     const created = await prisma.pengaturanPpdb.create({ data: data as any });

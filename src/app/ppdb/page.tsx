@@ -1,6 +1,7 @@
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import PageHero from "@/components/public/PageHero";
+import PpdbRegistrationForm from "@/components/public/PpdbRegistrationForm";
 import {
   Clock,
   FileText,
@@ -9,6 +10,7 @@ import {
   Award,
   ArrowRight,
   CheckCircle,
+  Edit3,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { initialSiteSettings, initialPpdb, PpdbData } from "@/data/mock-site";
@@ -110,17 +112,46 @@ export default async function PpdbPage() {
               </div>
             </div>
 
-            {ppdb.isOpen && (
+            <div className="flex items-center gap-3">
               <a
-                href={ppdb.registrationUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#formulir"
                 className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-[#0D4A38] text-white text-xs font-bold hover:bg-[#12634B] shadow-sm transition-all"
               >
-                <MessageCircle className="w-4 h-4" />
-                <span>Daftar Sekarang via WhatsApp</span>
+                <Edit3 className="w-4 h-4" />
+                <span>Isi Formulir Online</span>
               </a>
-            )}
+
+              {ppdb.isOpen && ppdb.registrationUrl && (
+                <a
+                  href={ppdb.registrationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-100 text-[#0D4A38] text-xs font-bold hover:bg-emerald-200 transition-all"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>WhatsApp</span>
+                </a>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* Section Formulir & Cek Status */}
+        <section id="formulir" className="py-12 bg-slate-50 border-b border-slate-200/80 scroll-mt-24">
+          <div className="section-container max-w-4xl mx-auto">
+            <div className="text-center mb-8">
+              <span className="text-xs font-bold uppercase text-[#0D4A38] tracking-wider block mb-1">
+                Portal Pendaftaran Resmi
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0B2238]">
+                Formulir Pendaftaran & Cek Status PPDB
+              </h2>
+              <p className="text-xs text-slate-500 mt-1 max-w-lg mx-auto">
+                Silakan lengkapi formulir di bawah ini, lakukan transfer biaya pendaftaran, dan unggah bukti transfer.
+              </p>
+            </div>
+
+            <PpdbRegistrationForm />
           </div>
         </section>
 

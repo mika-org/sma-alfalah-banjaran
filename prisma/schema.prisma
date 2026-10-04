@@ -202,19 +202,139 @@ model Faq {
 }
 
 model PengaturanPpdb {
-  id              String   @id @default(uuid())
-  tahun_ajaran    String   @default("2026/2027")
-  status_buka     Boolean  @default(true)
-  tagline         String   @default("Penerimaan Peserta Didik Baru (PPDB)")
-  deskripsi       String   @db.Text
-  persyaratan     String   @db.Text
-  jadwal          String   @db.Text
-  kontak          String   @db.Text
-  url_pendaftaran String   @default("https://wa.me/6281234567890")
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  id                   String   @id @default(uuid())
+  tahun_ajaran         String   @default("2026/2027")
+  status_buka          Boolean  @default(true)
+  tagline              String   @default("Penerimaan Peserta Didik Baru (PPDB)")
+  deskripsi            String   @db.Text
+  persyaratan          String   @db.Text
+  jadwal               String   @db.Text
+  kontak               String   @db.Text
+  url_pendaftaran      String   @default("https://wa.me/6281234567890")
+  biaya_pendaftaran    Int      @default(150000)
+  instruksi_pembayaran String?  @db.Text
+  qris_image           String?
+  created_at           DateTime @default(now())
+  updated_at           DateTime @updatedAt
 
   @@map("pengaturan_ppdb")
+}
+
+model RekeningPembayaran {
+  id             String   @id @default(uuid())
+  nama_bank      String
+  nomor_rekening String
+  atas_nama      String
+  urutan         Int      @default(0)
+  status_aktif   Boolean  @default(true)
+  catatan        String?
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  @@index([urutan, status_aktif])
+  @@map("rekening_pembayaran")
+}
+
+enum StatusPendaftaran {
+  MENUNGGU_VERIFIKASI
+  DITERIMA
+  DITOLAK
+}
+
+model CalonSiswa {
+  id                String            @id @default(uuid())
+  nomor_pendaftaran String            @unique
+  tahun_ajaran      String            @default("2026/2027")
+  jalur_pendaftaran String            @default("Reguler")
+
+  // Data Calon Siswa
+  nama_lengkap      String
+  nisn              String
+  nik               String?
+  jenis_kelamin     String            @default("L") // L / P
+  tempat_lahir      String
+  tanggal_lahir     DateTime
+  agama             String            @default("Islam")
+  alamat            String            @db.Text
+  asal_sekolah      String
+  no_hp_siswa       String?
+
+  // Data Orang Tua / Wali
+  nama_ayah         String
+  nama_ibu          String
+  pekerjaan_ortu    String?
+  no_whatsapp_ortu  String
+  email_ortu        String?
+
+  // Bukti & Pembayaran
+  bukti_pembayaran  String?
+  nama_pengirim     String?
+  nominal_transfer  Int?
+  bank_tujuan       String?
+  tanggal_transfer  DateTime?
+  catatan           String?           @db.Text
+
+  // Verifikasi
+  status            StatusPendaftaran @default(MENUNGGU_VERIFIKASI)
+  catatan_admin     String?           @db.Text
+  diverifikasi_pada DateTime?
+
+  // Hubungan ke Siswa jika diverifikasi
+  siswa             Siswa?
+
+  created_at        DateTime          @default(now())
+  updated_at        DateTime          @updatedAt
+
+  @@index([nomor_pendaftaran, nisn, status])
+  @@map("calon_siswa")
+}
+
+model Siswa {
+  id             String       @id @default(uuid())
+  nis            String       @unique
+  nisn           String       @unique
+  nama_lengkap   String
+  jenis_kelamin  String       @default("L")
+  tempat_lahir   String
+  tanggal_lahir  DateTime
+  alamat         String       @db.Text
+  asal_sekolah   String?
+  no_hp          String?
+  kelas          String       @default("X")
+  tahun_ajaran   String       @default("2026/2027")
+  status         String       @default("AKTIF")
+
+  calon_siswa_id String?      @unique
+  calon_siswa    CalonSiswa?  @relation(fields: [calon_siswa_id], references: [id], onDelete: SetNull)
+
+  akun_orang_tua AkunOrangTua?
+
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
+
+  @@index([nis, nisn, kelas, status])
+  @@map("siswa")
+}
+
+model AkunOrangTua {
+  id                         String    @id @default(uuid())
+  username                   String    @unique
+  nama_lengkap               String
+  email                      String?
+  no_whatsapp                String
+  password_hash              String
+  password_terbuka_sementara String?
+  status_aktif               Boolean   @default(true)
+  terakhir_masuk             DateTime?
+
+  siswa_id                   String    @unique
+  siswa                      Siswa     @relation(fields: [siswa_id], references: [id], onDelete: Cascade)
+
+  created_at                 DateTime  @default(now())
+  updated_at                 DateTime  @updatedAt
+
+  @@index([username, no_whatsapp])
+  @@map("akun_orang_tua")
 }
 
 model Media {
@@ -232,3 +352,4 @@ model Media {
   @@index([created_at])
   @@map("media")
 }
+

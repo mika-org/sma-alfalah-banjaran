@@ -14,6 +14,9 @@ export async function GET() {
     testimonialsCount,
     faqsCount,
     programsCount,
+    calonSiswaCount,
+    calonSiswaPending,
+    siswaCount,
     ppdbSetting,
     recentActivities,
   ] = await Promise.all([
@@ -22,6 +25,9 @@ export async function GET() {
     prisma.testimoni.count(),
     prisma.faq.count(),
     prisma.program.count(),
+    prisma.calonSiswa.count(),
+    prisma.calonSiswa.count({ where: { status: "MENUNGGU_VERIFIKASI" } }),
+    prisma.siswa.count(),
     prisma.pengaturanPpdb.findFirst(),
     prisma.kegiatan.findMany({
       take: 5,
@@ -36,7 +42,11 @@ export async function GET() {
       testimonials: testimonialsCount,
       faqs: faqsCount,
       programs: programsCount,
+      calonSiswa: calonSiswaCount,
+      calonSiswaPending: calonSiswaPending,
+      siswa: siswaCount,
     },
+
     ppdb: ppdbSetting
       ? {
           ...ppdbSetting,
